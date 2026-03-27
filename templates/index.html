@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Transaction Tracker</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>&#128176; Transaction Tracker</h1>
+      <span class="subtitle">Bank &amp; Credit Card SMS Parser</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== PARSE SMS ===== -->
+    <section class="card" id="section-parse">
+      <h2>&#128247; Parse SMS Message</h2>
+      <p class="hint">Paste a bank debit/credit SMS and we'll extract the transaction details automatically.</p>
+      <textarea id="sms-input" rows="4" placeholder="e.g. INR 1500.00 debited from A/c **1234 on 25-Mar-2026. Info: Amazon. Avl Bal:INR 50000.00"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="parseSMS()">Parse</button>
+        <button class="btn btn-ghost" onclick="clearParse()">Clear</button>
+      </div>
+
+      <!-- Parse preview -->
+      <div id="parse-error" class="alert alert-error hidden"></div>
+      <div id="parse-result" class="parse-result hidden">
+        <h3>Extracted Data</h3>
+        <div class="field-grid" id="parse-fields"></div>
+        <!-- Editable fields -->
+        <div class="edit-row">
+          <label>Merchant / Payee
+            <input type="text" id="edit-merchant" placeholder="e.g. Amazon" />
+          </label>
+          <label>Category
+            <select id="edit-category">
+              <option>Food</option>
+              <option>Shopping</option>
+              <option>Groceries</option>
+              <option>Utilities</option>
+              <option>Travel</option>
+              <option>Healthcare</option>
+              <option>Entertainment</option>
+              <option>Finance</option>
+              <option>Education</option>
+              <option>ATM</option>
+              <option>Other</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn btn-success" onclick="saveTransaction()">&#10003; Save Transaction</button>
+        <div id="save-status" class="save-status hidden"></div>
+      </div>
+    </section>
+
+    <!-- ===== DASHBOARD SUMMARY ===== -->
+    <section class="card" id="section-dashboard">
+      <div class="section-header">
+        <h2>&#128200; Monthly Summary</h2>
+        <input type="month" id="month-picker" onchange="loadSummary()" />
+      </div>
+
+      <div class="summary-cards" id="summary-cards">
+        <div class="summary-tile">
+          <div class="tile-label">Total Spent</div>
+          <div class="tile-value debit" id="total-debit">&#8212;</div>
+        </div>
+        <div class="summary-tile">
+          <div class="tile-label">Total Received</div>
+          <div class="tile-value credit" id="total-credit">&#8212;</div>
+        </div>
+        <div class="summary-tile">
+          <div class="tile-label">Transactions</div>
+          <div class="tile-value" id="txn-count">&#8212;</div>
+        </div>
+      </div>
+
+      <!-- Category chart -->
+      <h3>Spending by Category</h3>
+      <div id="category-chart" class="category-chart"></div>
+
+      <!-- Account balances -->
+      <h3>Account Balances</h3>
+      <div id="account-balances" class="account-grid"></div>
+    </section>
+
+    <!-- ===== TRANSACTIONS TABLE ===== -->
+    <section class="card" id="section-transactions">
+      <div class="section-header">
+        <h2>&#128203; Transactions</h2>
+        <div class="filters">
+          <input type="month" id="filter-month" onchange="loadTransactions()" />
+          <select id="filter-type" onchange="loadTransactions()">
+            <option value="">All Types</option>
+            <option value="debit">Debit</option>
+            <option value="credit">Credit</option>
+          </select>
+          <select id="filter-category" onchange="loadTransactions()">
+            <option value="">All Categories</option>
+            <option>Food</option>
+            <option>Shopping</option>
+            <option>Groceries</option>
+            <option>Utilities</option>
+            <option>Travel</option>
+            <option>Healthcare</option>
+            <option>Entertainment</option>
+            <option>Finance</option>
+            <option>Education</option>
+            <option>ATM</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="txn-empty" class="empty-state hidden">No transactions found for the selected filters.</div>
+      <div class="table-wrap">
+        <table id="txn-table" class="hidden">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Merchant</th>
+              <th>Category</th>
+              <th>Account</th>
+              <th>Balance</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="txn-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Financial Transaction Tracker &mdash; parse bank SMS messages securely in your browser</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
